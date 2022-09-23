@@ -1,15 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import Home from './pages/Home';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import Home from "./Pages/Home";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Survey from "./Pages/Survey";
+import Header from "./components/Header";
+import Error from "./components/Error";
+import Results from "./Pages/Results";
+import Freelances from "./Pages/Freelances";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Home />
+    <Router>
+      <Header></Header>
+      <Routes>
+        <Route path='*' element={<Error />} />
+        <Route path="/survey/:questionNumber" element={<Survey />}/>
+        <Route path="/results" element={<Results />}/>
+        <Route path="/freelances" element={<Freelances />}/>
+        <Route path="/" element={<Home />}/>
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 
