@@ -1,8 +1,9 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Loader } from "../../utils/style/Atoms";
-import styled from 'styled-components';
+import styled from "styled-components";
 import colors from "../../utils/style/colors";
+import { SurveyContext, AnswerType } from "../../utils/context";
 
 // interface SurveyDataType {
 //   [index: number]: string;
@@ -15,14 +16,29 @@ function Survey() {
   const questionNumber: number = parseInt(questionNumberStr || "1") || 1;
   const [surveyData, setSurveyData] = useState<SurveyDataType>({});
   const [dataLoaded, setDataLoaded] = useState(false);
+  const { answers, saveAnswers } = useContext(SurveyContext);
 
   function handleUseEffect() {
     console.log("Survey mounted");
+    async function fetchAnswers() {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/results/?a1={answer1}&a2={answer2}&a3={answer3}`
+        );
+        const obj: AnswerType[] = await response.json();
+        // saveAnswers(obj);
+        console.log(obj);
+      } catch (err) {
+        console.log(err);
+      } finally {
+      }
+    }
     async function fetchSurvey() {
       try {
         const response = await fetch(`http://localhost:8000/survey`);
-        const obj: {surveyData: SurveyDataType} = await response.json();
+        const obj: { surveyData: SurveyDataType } = await response.json();
         setSurveyData(obj.surveyData);
+        fetchAnswers();
       } catch (err) {
         console.log(err);
       } finally {
@@ -32,14 +48,25 @@ function Survey() {
     fetchSurvey();
     return () => {
       console.log("Survey unmounted");
-    }
+    };
   }
-  useEffect(handleUseEffect, []);
+  useEffect(handleUseEffect, [saveAnswers]);
 
   return (
     <SurveyContainer>
       <QuestionTitle>Question {questionNumberStr}</QuestionTitle>
-      {dataLoaded ? <QuestionContent>{surveyData[questionNumber] || "Pas de données"}</QuestionContent> : <Loader />}
+      {dataLoaded ? (
+        <div>
+          <QuestionContent>
+            {surveyData[questionNumber] || "Pas de données"}
+          </QuestionContent>
+          <AnswerContent>
+            Réponse
+          </AnswerContent>
+        </div>
+      ) : (
+        <Loader />
+      )}
       <LinkWrapper>
         {questionNumber > 1 && (
           <Link to={"/survey/" + (questionNumber - 1).toString()}>
@@ -47,9 +74,7 @@ function Survey() {
           </Link>
         )}
         {questionNumber < 10 ? (
-          <Link to={"/survey/" + (questionNumber + 1).toString()}>
-            Suivant
-          </Link>
+          <Link to={"/survey/" + (questionNumber + 1).toString()}>Suivant</Link>
         ) : (
           <Link to="/results">Résultats</Link>
         )}
@@ -71,6 +96,10 @@ const QuestionTitle = styled.h2`
 
 const QuestionContent = styled.span`
   margin: 30px;
+`;
+
+const AnswerContent = styled.h2`
+  margin: 40px;
 `;
 
 const LinkWrapper = styled.div`
