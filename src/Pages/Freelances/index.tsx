@@ -36,13 +36,13 @@ function Freelances() {
       <PageSubtitle>
         Chez Shiny nous réunissons les meilleurs profils pour vous.
       </PageSubtitle>
-      {dataLoaded ? (
+      {dataLoaded ? (freelancesProfiles.length > 0) ? (
         <CardsContainer>
           {freelancesProfiles.map((profile: FreelancerType) => (
             <Card key={profile.id} label={profile.job} title={profile.name} />
           ))}
         </CardsContainer>
-      ) : (
+      ) : <PageSubtitle>Aucune donnée</PageSubtitle> : (
         <Loader />
       )}
     </div>
