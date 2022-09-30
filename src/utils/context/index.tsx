@@ -31,14 +31,13 @@ export function ThemeProvider({ children }: LayoutProps) {
   );
 }
 
-export interface AnswerType {
-  title: string;
-  description: string;
+interface AnswerType {
+  [index: number]: boolean;
 }
 
 interface SurveyContextType {
-  answers: AnswerType[];
-  saveAnswers(newAnswers: AnswerType[]): void;
+  answers: AnswerType;
+  saveAnswers(newAnswers: AnswerType): void;
 }
 
 const defaultSurvey: SurveyContextType = {
@@ -50,9 +49,9 @@ const defaultSurvey: SurveyContextType = {
 export const SurveyContext = createContext(defaultSurvey);
 
 export const SurveyProvider = ({ children }: LayoutProps) => {
-  const defaultAnswers: AnswerType[] = [];
+  const defaultAnswers: AnswerType = [];
   const [answers, setAnswers] = useState(defaultAnswers);
-  function saveAnswers(newAnswers: AnswerType[]) {
+  function saveAnswers(newAnswers: AnswerType) {
     setAnswers({ ...answers, ...newAnswers });
   }
 
