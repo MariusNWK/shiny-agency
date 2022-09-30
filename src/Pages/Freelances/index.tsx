@@ -1,38 +1,50 @@
 import Card from "../../components/Card";
 import styled from "styled-components";
 import colors from "../../utils/style/colors";
+import { useEffect, useState } from "react";
+import { Loader } from "../../utils/style/Atoms";
 
-const freelanceProfiles = [
-  {
-    name: "Jane Doe",
-    jobTitle: "Devops",
-  },
-  {
-    name: "John Doe",
-    jobTitle: "Developpeur frontend",
-  },
-  {
-    name: "Jeanne Biche",
-    jobTitle: "Développeuse Fullstack",
-  },
-];
+interface FreelancerType {
+  id: number;
+  name: string;
+  job: string;
+  picture: string;
+}
 
 function Freelances() {
+  const [freelancesProfiles, setFreelancesProfiles] = useState<FreelancerType[]>([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  useEffect(() => {
+    async function fetchFreelances() {
+      try {
+        const response = await fetch(`http://localhost:8000/freelances`);
+        const { freelancersList } = await response.json();
+        setFreelancesProfiles(freelancersList);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setDataLoaded(true);
+      }
+    }
+    fetchFreelances();
+  }, []);
+
   return (
     <div>
       <PageTitle>Trouvez votre prestataire</PageTitle>
       <PageSubtitle>
         Chez Shiny nous réunissons les meilleurs profils pour vous.
       </PageSubtitle>
-      <CardsContainer>
-        {freelanceProfiles.map((profile, index) => (
-          <Card
-            key={`${profile.name}-${index}`}
-            label={profile.jobTitle}
-            title={profile.name}
-          />
-        ))}
-      </CardsContainer>
+      {dataLoaded ? (
+        <CardsContainer>
+          {freelancesProfiles.map((profile: FreelancerType) => (
+            <Card key={profile.id} label={profile.job} title={profile.name} />
+          ))}
+        </CardsContainer>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 }
