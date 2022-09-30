@@ -1,29 +1,19 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { SurveyContext } from "../../utils/context";
 
 function Results() {
-  const [questions, setQuestions] = useState({});
-
-  useEffect(() => {
-    fetch(`http://localhost:8000/survey`)
-      .then((response) => response.json()
-      .then(({ surveyData }) => {
-        console.log(surveyData);
-        setQuestions(surveyData);
-      })
-      .catch((error) => console.log(error))
-    );
-  }, []);
+  const { answers } = useContext(SurveyContext);
 
   function handleClick() {
-    console.log(questions);
+    console.log(answers);
   }
 
   return (
     <div>
       <h1>Results</h1>
-      <button onClick={handleClick}>Console questions</button>
+      <button onClick={handleClick}>Console answers</button>
     </div>
-  )
+  );
 }
 
 export default Results;
