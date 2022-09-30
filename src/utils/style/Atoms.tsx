@@ -10,7 +10,7 @@ export const StyledLink = styled(Link)<{ $isFullLink?: boolean }>`
   text-align: center;
   ${(props) =>
     props.$isFullLink &&
-    `color: white; 
+    `color: white;
     border-radius: 30px; 
     background-color: ${colors.primary};`}
 `;
