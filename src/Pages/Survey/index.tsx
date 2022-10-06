@@ -1,54 +1,48 @@
 import { useParams, Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Loader } from "../../utils/style/Atoms";
 import styled from "styled-components";
 import colors from "../../utils/style/colors";
 import { SurveyContext } from "../../utils/context";
+import { useFetch } from "../../utils/hooks";
 
 // interface SurveyDataType {
 //   [index: number]: string;
 // };
-
+// équivaut à :
 type SurveyDataType = Record<number, string>;
+
+interface DataType {
+  surveyData?: SurveyDataType;
+}
+
+interface UseFetchType {
+  isLoaded: boolean;
+  data: DataType;
+  error: boolean;
+}
 
 function Survey() {
   const { questionNumberStr } = useParams<{ questionNumberStr?: string }>();
   const questionNumber: number = parseInt(questionNumberStr || "1") || 1;
-  const [surveyData, setSurveyData] = useState<SurveyDataType>({});
-  const [dataLoaded, setDataLoaded] = useState(false);
   const { answers, saveAnswers } = useContext(SurveyContext);
-
-  function handleUseEffect() {
-    console.log("Survey mounted");
-    async function fetchSurvey() {
-      try {
-        const response = await fetch(`http://localhost:8000/survey`);
-        const obj: { surveyData: SurveyDataType } = await response.json();
-        setSurveyData(obj.surveyData);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setDataLoaded(true);
-      }
-    }
-    fetchSurvey();
-    return () => {
-      console.log("Survey unmounted");
-    };
-  }
-  useEffect(handleUseEffect, [saveAnswers]);
+  const { isLoaded, data, error }: UseFetchType = useFetch(`http://localhost:8000/survey`);
+  const { surveyData } = data;
 
   function saveReply(answer: boolean) {
     saveAnswers({ [questionNumber]: answer });
   }
 
+  if (error) {
+    return <span>Il y a un problème</span>;
+  }
   return (
     <SurveyContainer>
       <QuestionTitle>Question {questionNumberStr}</QuestionTitle>
-      {dataLoaded ? (
+      {isLoaded ? (
         <div>
           <QuestionContent>
-            {surveyData[questionNumber] || "Pas de données"}
+            {surveyData && (surveyData![questionNumber] || "Pas de données")}
           </QuestionContent>
           {answers && (
             <ReplyWrapper>

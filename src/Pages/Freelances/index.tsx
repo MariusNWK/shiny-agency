@@ -1,8 +1,8 @@
 import Card from "../../components/Card";
 import styled from "styled-components";
 import colors from "../../utils/style/colors";
-import { useEffect, useState } from "react";
 import { Loader } from "../../utils/style/Atoms";
+import { useFetch } from "../../utils/hooks";
 
 interface FreelancerType {
   id: number;
@@ -11,24 +11,24 @@ interface FreelancerType {
   picture: string;
 }
 
-function Freelances() {
-  const [freelancesProfiles, setFreelancesProfiles] = useState<FreelancerType[]>([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
+interface DataType {
+  freelancersList?: FreelancerType[];
+}
 
-  useEffect(() => {
-    async function fetchFreelances() {
-      try {
-        const response = await fetch(`http://localhost:8000/freelances`);
-        const { freelancersList } = await response.json();
-        setFreelancesProfiles(freelancersList);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setDataLoaded(true);
-      }
-    }
-    fetchFreelances();
-  }, []);
+interface UseFetchType {
+  isLoaded: boolean;
+  data: DataType;
+  error: boolean;
+}
+
+function Freelances() {
+  const { data, isLoaded, error }: UseFetchType = useFetch(`http://localhost:8000/freelances`);
+
+  if (error) {
+    return <span>Il y a une erreur</span>
+  }
+
+  const freelancesProfiles = data?.freelancersList;
 
   return (
     <div>
@@ -36,7 +36,7 @@ function Freelances() {
       <PageSubtitle>
         Chez Shiny nous réunissons les meilleurs profils pour vous.
       </PageSubtitle>
-      {dataLoaded ? (freelancesProfiles.length > 0) ? (
+      {isLoaded ? (freelancesProfiles) ? (
         <CardsContainer>
           {freelancesProfiles.map((profile: FreelancerType) => (
             <Card key={profile.id} label={profile.job} title={profile.name} />
