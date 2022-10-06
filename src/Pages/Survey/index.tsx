@@ -70,7 +70,7 @@ function Survey() {
             Précédent
           </Link>
         )}
-        {questionNumber < 10 ? (
+        {(!isLoaded) || (surveyData && surveyData[questionNumber + 1]) ? (
           <Link to={"/survey/" + (questionNumber + 1).toString()}>Suivant</Link>
         ) : (
           <Link to="/results">Résultats</Link>

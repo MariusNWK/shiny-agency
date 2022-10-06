@@ -21,12 +21,21 @@ interface UseFetchType {
   error: boolean;
 }
 
+export function formatJobList(title: string, listLength: number, index: number) {
+  if (index === listLength - 1) {
+    return title;
+  }
+  return `${title},`;
+}
+
 function Results() {
   const { theme } = useContext(ThemeContext);
   const { answers } = useContext(SurveyContext);
   const fetchParams = formatFetchParams(answers);
 
-  const { data, isLoaded, error }: UseFetchType = useFetch(`http://localhost:8000/results?${fetchParams}`);
+  const { data, isLoaded, error }: UseFetchType = useFetch(
+    `http://localhost:8000/results?${fetchParams}`
+  );
 
   if (error) {
     return <span>Il y a un problème</span>;
@@ -44,8 +53,7 @@ function Results() {
               key={`result-title-${index}-${result.title}`}
               theme={theme}
             >
-              {result.title}
-              {index === resultsData.length - 1 ? "" : ","}
+              {formatJobList(result.title, resultsData.length, index)}
             </JobTitle>
           ))}
       </ResultsTitle>

@@ -3,6 +3,31 @@ import colors from "../../utils/style/colors";
 import { StyledLink } from "../../utils/style/Atoms";
 import HomeIllustration from '../../assets/home-illustration.svg';
 
+export function sum(a: number, b: number)
+{
+  return a + b;
+}
+
+function Home() {
+  return (
+    <HomeWrapper>
+      {sum(40, 2)}
+      <HomeContainer>
+        <LeftCol>
+          <StyledTitle>
+            Repérez vos besoins, on s’occupe du reste, avec les meilleurs
+            talents
+          </StyledTitle>
+          <StyledLink to="/survey/1" $isFullLink>
+            Faire le test
+          </StyledLink>
+        </LeftCol>
+        <Illustration src={HomeIllustration} />
+      </HomeContainer>
+    </HomeWrapper>
+  );
+}
+
 const HomeWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -36,24 +61,5 @@ const StyledTitle = styled.h2`
 const Illustration = styled.img`
   flex: 1;
 `;
-
-function Home() {
-  return (
-    <HomeWrapper>
-      <HomeContainer>
-        <LeftCol>
-          <StyledTitle>
-            Repérez vos besoins, on s’occupe du reste, avec les meilleurs
-            talents
-          </StyledTitle>
-          <StyledLink to="/survey/1" $isFullLink>
-            Faire le test
-          </StyledLink>
-        </LeftCol>
-        <Illustration src={HomeIllustration} />
-      </HomeContainer>
-    </HomeWrapper>
-  );
-}
 
 export default Home;
