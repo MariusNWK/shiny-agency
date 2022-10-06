@@ -28,6 +28,22 @@ export function formatJobList(title: string, listLength: number, index: number) 
   return `${title},`;
 }
 
+interface AnswerType {
+  [index: number]: boolean;
+}
+
+export function formatFetchParams(answers: AnswerType) {
+  const answerNumbers = Object.keys(answers);
+
+  return answerNumbers.reduce((previousParams, answerNumber, index) => {
+    const isFirstParam = index === 0;
+    const separator = isFirstParam ? "" : "&";
+    return `${previousParams}${separator}a${answerNumber}=${
+      answers[parseInt(answerNumber)]
+    }`;
+  }, "");
+}
+
 function Results() {
   const { theme } = useContext(ThemeContext);
   const { answers } = useContext(SurveyContext);
@@ -78,22 +94,6 @@ function Results() {
       <Loader />
     </LoaderWrapper>
   );
-}
-
-interface AnswerType {
-  [index: number]: boolean;
-}
-
-function formatFetchParams(answers: AnswerType) {
-  const answerNumbers = Object.keys(answers);
-
-  return answerNumbers.reduce((previousParams, answerNumber, index) => {
-    const isFirstParam = index === 0;
-    const separator = isFirstParam ? "" : "&";
-    return `${previousParams}${separator}a${answerNumber}=${
-      answers[parseInt(answerNumber)]
-    }`;
-  }, "");
 }
 
 const ResultsContainer = styled.div`
