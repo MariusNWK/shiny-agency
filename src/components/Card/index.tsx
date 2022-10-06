@@ -17,7 +17,6 @@ function Card(props: CardProps) {
     <CardWrapper onClick={() => setIsFavorite(!isFavorite)}>
       <CardLabel>{label}</CardLabel>
       <CardImage src={picture} alt="freelance" />
-      <span>{title}</span>
       <CardTitle>
         {star} {title} {star}
       </CardTitle>

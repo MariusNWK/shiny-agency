@@ -43,7 +43,7 @@ function Freelances() {
           ))}
         </CardsContainer>
       ) : <PageSubtitle>Aucune donnée</PageSubtitle> : (
-        <Loader />
+        <Loader data-testid="loader"/>
       )}
     </div>
   );
